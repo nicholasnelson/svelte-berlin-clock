@@ -8,7 +8,7 @@
     themeClass?: string
     time?: Date
     tick?: boolean
-    size?: 'sm' | 'md' | 'lg' | number
+    size?: 'xs' | 'sm' | 'md' | 'lg' | number
     a11yLabel?: string
   }
 
@@ -62,6 +62,7 @@
       if (kind === 'sec') return `h-[${px + 4}px] w-[${px + 4}px]`
       return `h-[${px}px] w-[${px}px]`
     }
+    if (size === 'xs') return kind === 'sec' ? 'h-6 w-6' : 'h-5 w-5'
     if (size === 'sm') return kind === 'sec' ? 'h-8 w-8' : 'h-6 w-6'
     if (size === 'lg') return kind === 'sec' ? 'h-14 w-14' : 'h-12 w-12'
     return kind === 'sec' ? 'h-10 w-10' : 'h-8 w-8'
@@ -78,7 +79,16 @@
         ? '1.5rem'
         : size === 'lg'
           ? '3rem'
-          : '2rem'
+          : size === 'xs'
+            ? '1.25rem'
+            : '2rem'
+  )
+  const gapSize = $derived(
+    typeof size === 'number'
+      ? '0.5rem'
+      : size === 'xs'
+        ? '0.375rem'
+        : '0.5rem'
   )
   const a11yComputed = $derived(labelFor(effectiveTime))
 
@@ -93,7 +103,7 @@
   }
 </script>
 
-<div class={`flex flex-col items-center gap-4 p-4 ${className} ${themeClass}`} role="img" aria-live="polite" aria-label={a11yComputed} style={`--lamp-unit:${unitSize}; --lamp-gap:0.5rem`}>
+<div class={`flex flex-col items-center gap-4 p-6 ${className} ${themeClass}`} role="img" aria-live="polite" aria-label={a11yComputed} style={`--lamp-unit:${unitSize}; --lamp-gap:${gapSize}`}>
   <!-- Seconds: 1 circle -->
   <div class="flex justify-center">
     {#key clockState.seconds}
@@ -105,12 +115,12 @@
   <div class="flex flex-col items-center gap-2">
     <div class="flex gap-2 justify-center" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
       {#each clockState.hours.upper as lit, i}
-        <div class={`${sizeClass('hour')} rounded-sm border`} style={lampStyle(lit, 'red')} data-testid={`hour-upper-${i}`} data-lit={lit}></div>
+        <div class={`${sizeClass('hour')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(lit, 'red')} data-testid={`hour-upper-${i}`} data-lit={lit}></div>
       {/each}
     </div>
     <div class="flex gap-2 justify-center" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
       {#each clockState.hours.lower as lit, i}
-        <div class={`${sizeClass('hour')} rounded-sm border`} style={lampStyle(lit, 'red')} data-testid={`hour-lower-${i}`} data-lit={lit}></div>
+        <div class={`${sizeClass('hour')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(lit, 'red')} data-testid={`hour-lower-${i}`} data-lit={lit}></div>
       {/each}
     </div>
   </div>
@@ -120,15 +130,15 @@
     <div class="flex gap-2" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
       {#each clockState.minutes.upper as lit, i}
         {#if lit}
-          <div class={`flex-1 ${sizeClass('min').split(' ').filter(c => c.startsWith('h-') || c.startsWith('h[')).join(' ')} rounded-sm border`} style={lampStyle(true, [2,5,8].includes(i) ? 'red' : 'yellow')} data-testid={`min-upper-${i}`} data-lit={lit}></div>
+          <div class={`flex-1 ${sizeClass('min').split(' ').filter(c => c.startsWith('h-') || c.startsWith('h[')).join(' ')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(true, [2,5,8].includes(i) ? 'red' : 'yellow')} data-testid={`min-upper-${i}`} data-lit={lit}></div>
         {:else}
-          <div class={`flex-1 ${sizeClass('min').split(' ').filter(c => c.startsWith('h-') || c.startsWith('h[')).join(' ')} rounded-sm border`} style={lampStyle(false, 'yellow')} data-testid={`min-upper-${i}`} data-lit={lit}></div>
+          <div class={`flex-1 ${sizeClass('min').split(' ').filter(c => c.startsWith('h-') || c.startsWith('h[')).join(' ')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(false, 'yellow')} data-testid={`min-upper-${i}`} data-lit={lit}></div>
         {/if}
       {/each}
     </div>
     <div class="flex gap-2 justify-center" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
       {#each clockState.minutes.lower as lit, i}
-        <div class={`${sizeClass('min')} rounded-sm border`} style={lampStyle(lit, 'yellow')} data-testid={`min-lower-${i}`} data-lit={lit}></div>
+        <div class={`${sizeClass('min')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(lit, 'yellow')} data-testid={`min-lower-${i}`} data-lit={lit}></div>
       {/each}
     </div>
   </div>

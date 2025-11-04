@@ -37,6 +37,8 @@ html, body, #app {
   }
 }
 
+/* removed panel frame and pulse */
+
 /* Theme variations override CSS variables */
 .theme-warm {
   --surface: #1a0f0a;

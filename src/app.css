@@ -1,1 +1,22 @@
 @import 'tailwindcss';
+
+:root {
+  --lamp-yellow: #facc15; /* yellow-400 */
+  --lamp-red: #ef4444;    /* red-500 */
+  --lamp-off: #262626;    /* neutral-800 */
+  --lamp-glow: rgba(250, 204, 21, 0.4);
+  --surface: #0a0a0a;
+  --text: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #0a0a0a;
+    --text: #fafafa;
+  }
+}
+
+html, body, #app {
+  background: var(--surface);
+  color: var(--text);
+}

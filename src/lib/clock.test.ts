@@ -78,6 +78,26 @@ describe('BerlinClock encoder', () => {
     expect(after.minutes.upper.filter(Boolean).length).toBe(0)
     expect(after.minutes.lower.filter(Boolean).length).toBe(0)
   })
+
+  it('boundary 09:59 -> 10:00 transitions correctly', () => {
+    const bc = new BerlinClock()
+    const before = bc.getState(d(9, 59, 59))
+    const after = bc.getState(d(10, 0, 0))
+
+    // Before: 9 hours => upper 1 (5), lower 4 (4)
+    expect(before.hours.upper.filter(Boolean).length).toBe(1)
+    expect(before.hours.lower.filter(Boolean).length).toBe(4)
+
+    // After: 10 hours => upper 2 (10), lower 0 (0)
+    expect(after.hours.upper.filter(Boolean).length).toBe(2)
+    expect(after.hours.lower.filter(Boolean).length).toBe(0)
+
+    // Minutes reset
+    expect(before.minutes.upper.filter(Boolean).length).toBe(11)
+    expect(before.minutes.lower.filter(Boolean).length).toBe(4)
+    expect(after.minutes.upper.filter(Boolean).length).toBe(0)
+    expect(after.minutes.lower.filter(Boolean).length).toBe(0)
+  })
 })
 
 

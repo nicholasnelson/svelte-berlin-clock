@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import tailwindcss from "@tailwindcss/vite";
 import { sveltekit } from "@sveltejs/kit/vite";
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   plugins: [tailwindcss(), sveltekit()],
@@ -10,32 +11,18 @@ export default defineConfig({
       {
         extends: "./vite.config.ts",
         test: {
-          name: "server",
-          environment: "node",
-          include: ["src/**/*.{test,spec}.{js,ts}"],
-          exclude: [
-            "src/**/*.svelte.{test,spec}.{js,ts}",
-            "src/lib/basic-clock/**/*.{test,spec}.{js,ts}"
-          ],
-        },
-      },
-      {
-        extends: "./vite.config.ts",
-        test: {
-          name: "dom",
-          environment: "jsdom",
-          include: [
-            "src/**/*.svelte.{test,spec}.{js,ts}",
-            "src/lib/basic-clock/**/*.{test,spec}.{js,ts}"
-          ],
-          setupFiles: ["./vitest.setup.ts"],
-          deps: {
-            inline: ["@testing-library/svelte", "svelte"]
+          name: "browser",
+          browser: {
+            provider: playwright(),
+            enabled: true,
+            headless: true,
+            instances: [
+              { browser: 'chromium' },
+            ],
           },
-          define: {
-            'import.meta.env.SSR': 'false'
-          }
-        },
+          include: ["src/**/*.svelte.{test,spec}.{js,ts}", "src/**/*.{test,spec}.{js,ts}"],
+          setupFiles: ['./src/vitest-setup-client.ts'],
+        }
       },
     ],
   },

@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { BerlinClock, formatTime } from '../lib/index.js'
-  import ClockControls from './ClockControls.svelte'
-  import ClockLegend from './ClockLegend.svelte'
+  import { BerlinClock } from '$lib/index.js'
+  import { formatTime } from '$lib/utils/format.js'
+  import ClockControls from '$lib/components/demo/ClockControls.svelte'
+  import ClockLegend from '$lib/components/demo/ClockLegend.svelte'
 
   let tick = true
   let time = new Date()

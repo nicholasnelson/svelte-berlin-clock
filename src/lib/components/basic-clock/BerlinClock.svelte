@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { BerlinClock as Encoder } from '../clock.js'
-  import type { BerlinClockOutputState } from '../clock.js'
+  import { BerlinClock as Encoder } from '../../clock.js'
+  import type { BerlinClockOutputState } from '../../clock.js'
+  import '../../../app.css';
+
 
   type Props = {
     class?: string
@@ -103,7 +105,7 @@
   }
 </script>
 
-<div class={`flex flex-col items-center gap-4 p-6 ${className} ${themeClass}`} role="img" aria-live="polite" aria-label={a11yComputed} style={`--lamp-unit:${unitSize}; --lamp-gap:${gapSize}`}>
+<div data-testid="berlin-clock-basic" class={`flex flex-col items-center gap-4 p-6 ${className} ${themeClass}`} role="img" aria-live="polite" aria-label={a11yComputed} style={`--lamp-unit:${unitSize}; --lamp-gap:${gapSize}`}>
   <!-- Seconds: 1 circle -->
   <div class="flex justify-center">
     {#key clockState.seconds}

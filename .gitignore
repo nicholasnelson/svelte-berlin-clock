@@ -1,2 +1,8 @@
 node_modules
 .svelte-kit
+
+dist
+__screenshots__
+
+AGENTS.md
+.playwright-mcp

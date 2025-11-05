@@ -2,8 +2,6 @@
   import { onMount } from 'svelte'
   import { BerlinClock as Encoder } from '../../clock.js'
   import type { BerlinClockOutputState } from '../../clock.js'
-  import '../../../app.css';
-
 
   type Props = {
     class?: string
@@ -58,18 +56,6 @@
   })
   let clockState: BerlinClockOutputState = $derived(clock.getState(effectiveTime))
 
-  function sizeClass(kind: 'sec' | 'hour' | 'min') {
-    if (typeof size === 'number') {
-      const px = Math.max(6, size)
-      if (kind === 'sec') return `h-[${px + 4}px] w-[${px + 4}px]`
-      return `h-[${px}px] w-[${px}px]`
-    }
-    if (size === 'xs') return kind === 'sec' ? 'h-6 w-6' : 'h-5 w-5'
-    if (size === 'sm') return kind === 'sec' ? 'h-8 w-8' : 'h-6 w-6'
-    if (size === 'lg') return kind === 'sec' ? 'h-14 w-14' : 'h-12 w-12'
-    return kind === 'sec' ? 'h-10 w-10' : 'h-8 w-8'
-  }
-
   function labelFor(time: Date) {
     return a11yLabel ?? time.toLocaleTimeString()
   }
@@ -92,6 +78,17 @@
         ? '0.375rem'
         : '0.5rem'
   )
+  const secondUnit = $derived(
+    typeof size === 'number'
+      ? `${Math.max(6, size) + 4}px`
+      : size === 'xs'
+        ? '1.5rem'
+        : size === 'sm'
+          ? '2rem'
+          : size === 'lg'
+            ? '3.5rem'
+            : '2.5rem'
+  )
   const a11yComputed = $derived(labelFor(effectiveTime))
 
   function lampStyle(on: boolean, color: 'red' | 'yellow') {
@@ -105,46 +102,142 @@
   }
 </script>
 
-<div data-testid="berlin-clock-basic" class={`flex flex-col items-center gap-4 p-6 ${className} ${themeClass}`} role="img" aria-live="polite" aria-label={a11yComputed} style={`--lamp-unit:${unitSize}; --lamp-gap:${gapSize}`}>
+<div
+  data-testid="berlin-clock-basic"
+  class={`clock ${className} ${themeClass}`}
+  role="img"
+  aria-live="polite"
+  aria-label={a11yComputed}
+  style={`--lamp-unit:${unitSize}; --lamp-gap:${gapSize}; --lamp-sec-unit:${secondUnit}; --lamp-row-width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap));`}
+>
   <!-- Seconds: 1 circle -->
-  <div class="flex justify-center">
-    {#key clockState.seconds}
-      <div class={`${sizeClass('sec')} rounded-full border ${clockState.seconds === 1 ? 'animate-[sec-pulse_1000ms_ease-out_1] motion-reduce:animate-none' : ''}`} style={lampStyle(clockState.seconds === 1, 'yellow')} data-testid="sec" data-lit={clockState.seconds === 1}></div>
-    {/key}
+  <div class="clock__seconds">
+    <div
+      class={`lamp lamp--seconds ${clockState.seconds === 1 ? 'lamp--seconds-active' : ''}`}
+      style={lampStyle(clockState.seconds === 1, 'yellow')}
+      data-testid="sec"
+      data-lit={clockState.seconds === 1}
+    ></div>
   </div>
 
   <!-- Hours: 2 rows of 4 squares -->
-  <div class="flex flex-col items-center gap-2">
-    <div class="flex gap-2 justify-center" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
+  <div class="clock__group">
+    <div class="clock__row">
       {#each clockState.hours.upper as lit, i}
-        <div class={`${sizeClass('hour')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(lit, 'red')} data-testid={`hour-upper-${i}`} data-lit={lit}></div>
+        <div
+          class="lamp"
+          style={lampStyle(lit, 'red')}
+          data-testid={`hour-upper-${i}`}
+          data-lit={lit}
+        ></div>
       {/each}
     </div>
-    <div class="flex gap-2 justify-center" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
+    <div class="clock__row">
       {#each clockState.hours.lower as lit, i}
-        <div class={`${sizeClass('hour')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(lit, 'red')} data-testid={`hour-lower-${i}`} data-lit={lit}></div>
+        <div
+          class="lamp"
+          style={lampStyle(lit, 'red')}
+          data-testid={`hour-lower-${i}`}
+          data-lit={lit}
+        ></div>
       {/each}
     </div>
   </div>
 
   <!-- Minutes: upper row 11 squares, lower row 4 squares -->
-  <div class="flex flex-col items-center gap-2">
-    <div class="flex gap-2" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
+  <div class="clock__group">
+    <div class="clock__row clock__row--minutes-upper">
       {#each clockState.minutes.upper as lit, i}
-        {#if lit}
-          <div class={`flex-1 ${sizeClass('min').split(' ').filter(c => c.startsWith('h-') || c.startsWith('h[')).join(' ')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(true, [2,5,8].includes(i) ? 'red' : 'yellow')} data-testid={`min-upper-${i}`} data-lit={lit}></div>
-        {:else}
-          <div class={`flex-1 ${sizeClass('min').split(' ').filter(c => c.startsWith('h-') || c.startsWith('h[')).join(' ')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(false, 'yellow')} data-testid={`min-upper-${i}`} data-lit={lit}></div>
-        {/if}
+        <div
+          class="lamp lamp--minutes-upper"
+          style={lampStyle(lit, [2, 5, 8].includes(i) ? 'red' : 'yellow')}
+          data-testid={`min-upper-${i}`}
+          data-lit={lit}
+        ></div>
       {/each}
     </div>
-    <div class="flex gap-2 justify-center" style="width: calc(4 * var(--lamp-unit) + 3 * var(--lamp-gap))">
+    <div class="clock__row clock__row--minutes-lower">
       {#each clockState.minutes.lower as lit, i}
-        <div class={`${sizeClass('min')} rounded-sm border transition-[background,border-color,box-shadow] duration-200 ease-out motion-reduce:transition-none`} style={lampStyle(lit, 'yellow')} data-testid={`min-lower-${i}`} data-lit={lit}></div>
+        <div
+          class="lamp"
+          style={lampStyle(lit, 'yellow')}
+          data-testid={`min-lower-${i}`}
+          data-lit={lit}
+        ></div>
       {/each}
     </div>
   </div>
 </div>
 
+<style>
+  @import '$lib/theme.css';
 
+  .clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--lamp-gap) * 2);
+    padding: 1.5rem;
+  }
+
+  .clock__seconds {
+    display: flex;
+    justify-content: center;
+    width: var(--lamp-row-width);
+  }
+
+  .clock__group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--lamp-gap);
+  }
+
+  .clock__row {
+    display: flex;
+    justify-content: center;
+    gap: var(--lamp-gap);
+    width: var(--lamp-row-width);
+  }
+
+  .clock__row--minutes-upper .lamp {
+    flex: 1 1 0%;
+    width: auto;
+  }
+
+  .lamp {
+    display: block;
+    width: var(--lamp-unit);
+    height: var(--lamp-unit);
+    border-radius: 3px;
+    border: 1px solid var(--lamp-off-border);
+    background: var(--lamp-off);
+    box-shadow: none;
+    transition: background-color 500ms ease-out, border-color 500ms ease-out, box-shadow 500ms ease-out;
+  }
+
+  .lamp--minutes-upper {
+    height: var(--lamp-unit);
+  }
+
+  .lamp--seconds {
+    border-radius: 9999px;
+    width: var(--lamp-sec-unit);
+    height: var(--lamp-sec-unit);
+  }
+
+  .lamp--seconds-active {
+    animation: sec-pulse 1000ms ease-out 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lamp {
+      transition: none;
+    }
+
+    .lamp--seconds-active {
+      animation: none;
+    }
+  }
+</style>
 

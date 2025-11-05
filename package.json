@@ -1,6 +1,6 @@
 {
   "name": "@nicnels/svelte-berlin-clock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run prepack",
@@ -67,7 +67,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/nicholasnelson/svelte-berlin-clock.git"
+    "url": "git+https://github.com/nicholasnelson/svelte-berlin-clock.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }

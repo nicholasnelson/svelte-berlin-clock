@@ -1,18 +1,5 @@
 @import 'tailwindcss';
 
-:root {
-  --lamp-yellow: #facc15; /* yellow-400 */
-  --lamp-yellow-border: #a16207; /* yellow-700 */
-  --lamp-red: #ef4444;    /* red-500 */
-  --lamp-red-border: #b91c1c; /* red-700 */
-  --lamp-off: #262626;    /* neutral-800 */
-  --lamp-off-border: #404040; /* neutral-700 */
-  --lamp-glow-yellow: rgba(250, 204, 21, 0.5);
-  --lamp-glow-red: rgba(239, 68, 68, 0.5);
-  --surface: #0a0a0a;
-  --text: #fafafa;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --surface: #0a0a0a;
@@ -25,43 +12,3 @@ html, body, #app {
   color: var(--text);
 }
 
-@keyframes sec-pulse {
-  0% {
-    box-shadow: 0 0 0 rgba(250, 204, 21, 0);
-  }
-  35% {
-    box-shadow: 0 0 16px rgba(250, 204, 21, 0.65);
-  }
-  100% {
-    box-shadow: 0 0 0 rgba(250, 204, 21, 0);
-  }
-}
-
-/* removed panel frame and pulse */
-
-/* Theme variations override CSS variables */
-.theme-warm {
-  --surface: #1a0f0a;
-  --text: #fff7ed;
-  --lamp-yellow: #f59e0b; /* amber-500 */
-  --lamp-yellow-border: #b45309; /* amber-700 */
-  --lamp-red: #dc2626; /* red-600 */
-  --lamp-red-border: #7f1d1d; /* red-800 */
-  --lamp-off: #2a1b16;
-  --lamp-off-border: #4a2e25;
-  --lamp-glow-yellow: rgba(245, 158, 11, 0.6);
-  --lamp-glow-red: rgba(220, 38, 38, 0.6);
-}
-
-.theme-cool {
-  --surface: #0b1220; /* slate-like */
-  --text: #e5e7eb;
-  --lamp-yellow: #fbbf24; /* amber-400 */
-  --lamp-yellow-border: #92400e; /* amber-800 */
-  --lamp-red: #f87171; /* red-400 */
-  --lamp-red-border: #991b1b; /* red-800 */
-  --lamp-off: #0f172a; /* slate-900 */
-  --lamp-off-border: #1f2937; /* gray-800 */
-  --lamp-glow-yellow: rgba(251, 191, 36, 0.55);
-  --lamp-glow-red: rgba(248, 113, 113, 0.55);
-}
